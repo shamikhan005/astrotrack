@@ -11,6 +11,8 @@ const eventTypeColors = {
   'space-mission': 'bg-green-100 text-green-800',
   'planet-observation': 'bg-indigo-100 text-indigo-800',
   'comet': 'bg-orange-100 text-orange-800',
+  'iss-flyover': 'bg-cyan-100 text-cyan-800',
+  'planetary-conjunction': 'bg-pink-100 text-pink-800',
   'other': 'bg-gray-100 text-gray-800'
 };
 
@@ -21,6 +23,8 @@ const eventTypeIcons = {
   'space-mission': '🚀',
   'planet-observation': '🔭',
   'comet': '☄️',
+  'iss-flyover': '🛰️',
+  'planetary-conjunction': '🌟',
   'other': '🌌'
 };
 

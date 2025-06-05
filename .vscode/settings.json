@@ -3,15 +3,21 @@
     "APOD",
     "astrotrack",
     "flickr",
+    "geminids",
     "gridfins",
     "hdurl",
     "inhold",
     "landpad",
+    "lyrids",
     "neos",
+    "perseids",
     "presskit",
+    "quadrantids",
+    "risetime",
     "SPACEX",
     "tbddate",
     "tbdtime",
-    "tisserand"
+    "tisserand",
+    "Tuttle"
   ]
 }

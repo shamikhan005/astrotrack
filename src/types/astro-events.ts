@@ -18,6 +18,8 @@ export type EventType =
   | 'space-mission' 
   | 'planet-observation' 
   | 'comet'
+  | 'iss-flyover'
+  | 'planetary-conjunction'
   | 'other';
 
 export interface VisibilityInfo {
@@ -25,6 +27,10 @@ export interface VisibilityInfo {
   bestViewingTime?: string;
   visibleToNakedEye: boolean;
   equipment?: string;
+  coordinates?: {
+    latitude: number;
+    longitude: number;
+  };
 }
 
 export interface NasaApodResponse {
@@ -113,4 +119,48 @@ export interface OrbitalData {
   mean_anomaly: string;
   mean_motion: string;
   equinox: string;
+}
+
+export interface MeteorShower {
+  id: string;
+  name: string;
+  description: string;
+  active_start: string;
+  active_end: string;
+  peak_date: string;
+  radiant: string;
+  zhr: number; 
+  velocity: number; 
+  parent_comet?: string;
+}
+
+export interface ISSFlyover {
+  date: string;
+  duration: number;
+  max_elevation: number; 
+  appears: string; 
+  disappears: string; 
+  mag: number; 
+}
+
+export interface PlanetaryConjunction {
+  id: string;
+  name: string;
+  description: string;
+  date: string;
+  planets: string[];
+  separation: number;
+  magnitude?: number;
+  constellation?: string;
+}
+
+export interface NasaISSResponse {
+  request: {
+    latitude: number;
+    longitude: number;
+    altitude: number;
+    passes: number;
+    datetime: number;
+  };
+  response: ISSFlyover[];
 }
