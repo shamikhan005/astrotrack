@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { AstronomicalEvent } from '@/types/astro-events';
 import { getAstronomicalEvents } from '@/lib/api-client';
+import { useLocation } from '@/contexts/location-context';
 
 const eventTypeColors = {
   'meteor-shower': 'bg-purple-100 text-purple-800',
@@ -97,6 +98,7 @@ function EventCard({ event }: { event: AstronomicalEvent }) {
 }
 
 export default function AstronomicalEvents() {
+  const { location } = useLocation();
   const [events, setEvents] = useState<AstronomicalEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -106,7 +108,10 @@ export default function AstronomicalEvents() {
       try {
         setLoading(true);
         setError(null);
-        const eventsData = await getAstronomicalEvents();
+        const eventsData = await getAstronomicalEvents(location ? {
+          latitude: location.latitude,
+          longitude: location.longitude
+        } : undefined);
         setEvents(eventsData);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch events');
@@ -117,7 +122,7 @@ export default function AstronomicalEvents() {
     }
 
     fetchEvents();
-  }, []);
+  }, [location]);
 
   if (loading) {
     return (

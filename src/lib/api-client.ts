@@ -253,13 +253,15 @@ export async function getPlanetaryConjunctions(): Promise<PlanetaryConjunction[]
   });
 }
 
-export async function getAstronomicalEvents(): Promise<AstronomicalEvent[]> {
+export async function getAstronomicalEvents(
+  userLocation?: { latitude: number; longitude: number }
+): Promise<AstronomicalEvent[]> {
   try {
     const today = new Date();
     const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
 
-    const defaultLatitude = 40.7128; 
-    const defaultLongitude = -74.0060;
+    const latitude = userLocation?.latitude || 28.6139;
+    const longitude = userLocation?.longitude || 77.2090;
 
     const [neoData, allLaunches, meteorShowers, issData, conjunctions] = await Promise.allSettled([
       getNearEarthObjects(
@@ -268,7 +270,7 @@ export async function getAstronomicalEvents(): Promise<AstronomicalEvent[]> {
       ),
       getUpcomingLaunches(10),
       getMeteorShowers(),
-      getISSFlyovers(defaultLatitude, defaultLongitude, 0, 3),
+      getISSFlyovers(latitude, longitude, 0, 3),
       getPlanetaryConjunctions()
     ]);
 
@@ -353,8 +355,8 @@ export async function getAstronomicalEvents(): Promise<AstronomicalEvent[]> {
             bestViewingTime: "During pass time",
             equipment: "None required",
             coordinates: {
-              latitude: defaultLatitude,
-              longitude: defaultLongitude,
+              latitude,
+              longitude,
             },
           },
           source: "Open Notify API",
