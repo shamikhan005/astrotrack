@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { AstronomicalEvent } from '@/types/astro-events';
 import { getAstronomicalEvents } from '@/lib/api-client';
 import { useLocation } from '@/contexts/location-context';
+import { EventCalendarExport } from '@/components/calendar-export';
 
 const eventTypeColors = {
   'meteor-shower': 'bg-purple-100 text-purple-800',
@@ -31,13 +32,19 @@ const eventTypeIcons = {
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
+  
+  if (isNaN(date.getTime())) {
+    return `Invalid date: ${dateString}`;
+  }
+  
   return date.toLocaleDateString('en-US', {
     weekday: 'short',
     year: 'numeric',
     month: 'short',
     day: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
+    timeZoneName: 'short'
   });
 }
 
@@ -81,23 +88,28 @@ function EventCard({ event }: { event: AstronomicalEvent }) {
         )}
       </div>
       
-      {event.externalUrl && (
-        <div className="mt-4">
+      <div className="mt-4 flex gap-2 items-center">
+        <EventCalendarExport event={event} />
+        {event.externalUrl && (
           <a
             href={event.externalUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium"
+            className="inline-flex items-center text-gray-600 hover:text-gray-800 text-sm font-medium"
           >
             Learn more →
           </a>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
 
-export default function AstronomicalEvents() {
+interface AstronomicalEventsProps {
+  onEventsChange?: (events: AstronomicalEvent[]) => void;
+}
+
+export default function AstronomicalEvents({ onEventsChange }: AstronomicalEventsProps) {
   const { location } = useLocation();
   const [events, setEvents] = useState<AstronomicalEvent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -113,6 +125,7 @@ export default function AstronomicalEvents() {
           longitude: location.longitude
         } : undefined);
         setEvents(eventsData);
+        onEventsChange?.(eventsData);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch events');
         console.error('Error fetching events:', err);

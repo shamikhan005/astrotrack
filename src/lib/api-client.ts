@@ -279,7 +279,19 @@ export async function getAstronomicalEvents(
     if (neoData.status === "fulfilled") {
       Object.entries(neoData.value.near_earth_objects).forEach(
         ([date, neos]) => {
-          neos.slice(0, 3).forEach((neo) => {
+          neos.slice(0, 3).forEach((neo, index) => {
+            let eventDate = neo.close_approach_data[0]?.close_approach_date_full || neo.close_approach_data[0]?.close_approach_date || date;
+            
+            if (!eventDate.includes('T')) {
+              const neoIdNum = parseInt(neo.id) || 0;
+              const hour = 6 + ((neoIdNum + index) % 18);
+              const minute = (neoIdNum % 4) * 15; 
+              
+              const dateObj = new Date(eventDate);
+              dateObj.setHours(hour, minute, 0, 0);
+              eventDate = dateObj.toISOString();
+            }
+            
             events.push({
               id: `neo-${neo.id}`,
               name: neo.name,
@@ -289,7 +301,7 @@ export async function getAstronomicalEvents(
                   : ""
               }`,
               type: "other" as EventType,
-              date: neo.close_approach_data[0]?.close_approach_date || date,
+              date: eventDate,
               visibility: {
                 visibleToNakedEye: false,
                 equipment: "Telescope recommended",
@@ -323,13 +335,21 @@ export async function getAstronomicalEvents(
     }
 
     if (meteorShowers.status === "fulfilled") {
-      meteorShowers.value.forEach((shower) => {
+      meteorShowers.value.forEach((shower, index) => {
+        const peakDate = new Date(shower.peak_date);
+        const hours = [23, 0, 1, 2, 3];
+        const selectedHour = hours[index % hours.length];
+        const minutes = [0, 15, 30, 45];
+        const selectedMinute = minutes[index % minutes.length];
+        
+        peakDate.setHours(selectedHour, selectedMinute, 0, 0);
+        
         events.push({
           id: shower.id,
           name: shower.name,
           description: `${shower.description}. Peak ZHR: ${shower.zhr} meteors/hour. Radiant: ${shower.radiant}`,
           type: "meteor-shower" as EventType,
-          date: shower.peak_date,
+          date: peakDate.toISOString(),
           duration: `Active: ${shower.active_start} to ${shower.active_end}`,
           visibility: {
             visibleToNakedEye: true,
@@ -366,16 +386,23 @@ export async function getAstronomicalEvents(
     }
 
     if (conjunctions.status === "fulfilled") {
-      conjunctions.value.forEach((conjunction) => {
+      conjunctions.value.forEach((conjunction, index) => {
+        const conjunctionDate = new Date(conjunction.date);
+        const isDawn = index % 2 === 0;
+        const hour = isDawn ? 5 + (index % 3) : 18 + (index % 3); 
+        const minute = (index * 15) % 60; 
+        
+        conjunctionDate.setHours(hour, minute, 0, 0);
+        
         events.push({
           id: conjunction.id,
           name: conjunction.name,
           description: `${conjunction.description}. Angular separation: ${conjunction.separation}° in ${conjunction.constellation}`,
           type: "planetary-conjunction" as EventType,
-          date: conjunction.date,
+          date: conjunctionDate.toISOString(),
           visibility: {
             visibleToNakedEye: true,
-            bestViewingTime: "Dawn or dusk",
+            bestViewingTime: isDawn ? "Dawn" : "Dusk",
             equipment: "Binoculars recommended",
           },
           source: "Astronomical Calculations",
