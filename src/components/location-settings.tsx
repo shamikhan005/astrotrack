@@ -54,14 +54,14 @@ export default function LocationSettings() {
     <div className="relative">
       <button
         onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-        className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-md border border-gray-200 hover:bg-gray-50 transition-colors"
+        className="btn-glass flex items-center gap-3 px-4 py-3 rounded-xl glow-hover"
       >
-        <span className="text-lg">📍</span>
+        <span className="text-xl">📍</span>
         <div className="text-left">
-          <div className="text-sm font-medium text-gray-900">
+          <div className="text-sm font-medium text-white">
             {location?.name || location?.city || 'Set Location'}
           </div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-white/60">
             {location ? `${location.latitude.toFixed(2)}, ${location.longitude.toFixed(2)}` : 'No location set'}
           </div>
         </div>
@@ -71,14 +71,16 @@ export default function LocationSettings() {
       </button>
 
       {isSettingsOpen && (
-        <div className="absolute top-full left-0 mt-2 w-96 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-          <div className="p-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Location Preferences</h3>
+        <div className="absolute top-full left-0 mt-3 w-96 glass-strong rounded-2xl border border-white/20 z-50">
+          <div className="p-6">
+            <h3 className="text-xl font-bold text-white mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+              Location Preferences
+            </h3>
 
             <button
               onClick={handleGetCurrentLocation}
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed mb-4"
+              className="w-full btn-primary-glass flex items-center justify-center gap-3 px-4 py-3 rounded-xl font-medium mb-6 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <>
@@ -93,8 +95,8 @@ export default function LocationSettings() {
               )}
             </button>
 
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-white/80 mb-3">
                 Search for a location:
               </label>
               <input
@@ -102,23 +104,23 @@ export default function LocationSettings() {
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
                 placeholder="Enter city name..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="input-glass w-full px-4 py-3 rounded-xl"
               />
               
               {isSearching && (
-                <div className="mt-2 text-sm text-gray-500">Searching...</div>
+                <div className="mt-3 text-sm text-white/60">Searching...</div>
               )}
 
               {searchResults.length > 0 && (
-                <div className="mt-2 max-h-40 overflow-y-auto border border-gray-200 rounded-md">
+                <div className="mt-3 max-h-40 overflow-y-auto glass rounded-xl border border-white/10">
                   {searchResults.map((result, index) => (
                     <button
                       key={index}
                       onClick={() => handleLocationSelect(result)}
-                      className="w-full text-left px-3 py-2 hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+                      className="w-full text-left px-4 py-3 hover:bg-white/10 border-b border-white/10 last:border-b-0 first:rounded-t-xl last:rounded-b-xl"
                     >
-                      <div className="font-medium text-sm">{result.city}</div>
-                      <div className="text-xs text-gray-500">{result.country}</div>
+                      <div className="font-medium text-sm text-white">{result.city}</div>
+                      <div className="text-xs text-white/60">{result.country}</div>
                     </button>
                   ))}
                 </div>
@@ -126,20 +128,20 @@ export default function LocationSettings() {
             </div>
 
             {preferences.savedLocations.length > 0 && (
-              <div className="mb-4">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Saved Locations:</h4>
-                <div className="space-y-1">
+              <div className="mb-6">
+                <h4 className="text-sm font-medium text-white/80 mb-3">Saved Locations:</h4>
+                <div className="space-y-2">
                   {preferences.savedLocations.map((savedLoc, index) => (
-                    <div key={index} className="flex items-center justify-between py-1">
+                    <div key={index} className="flex items-center justify-between glass rounded-xl p-3">
                       <button
                         onClick={() => updateLocation(savedLoc)}
-                        className="flex-1 text-left text-sm text-gray-600 hover:text-blue-600"
+                        className="flex-1 text-left text-sm text-white/80 hover:text-white transition-colors"
                       >
                         {savedLoc.name || savedLoc.city}
                       </button>
                       <button
                         onClick={() => removeLocation(savedLoc)}
-                        className="text-red-500 hover:text-red-700 text-sm"
+                        className="text-red-400 hover:text-red-300 text-sm ml-3 btn-glass w-8 h-8 rounded-full flex items-center justify-center"
                       >
                         ✕
                       </button>
@@ -152,15 +154,15 @@ export default function LocationSettings() {
             {location && (
               <button
                 onClick={() => saveLocation(location)}
-                className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm"
+                className="w-full btn-glass px-4 py-3 rounded-xl font-medium text-sm"
               >
                 💾 Save Current Location
               </button>
             )}
 
             {error && (
-              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
-                <div className="text-sm text-red-600">{error}</div>
+              <div className="mt-4 glass border border-red-400/30 rounded-xl p-4">
+                <div className="text-sm text-red-300">{error}</div>
               </div>
             )}
           </div>
