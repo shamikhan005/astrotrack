@@ -7,15 +7,15 @@ import { useLocation } from '@/contexts/location-context';
 import CalendarExport from '@/components/calendar-export';
 
 const eventTypeColors = {
-  'meteor-shower': 'bg-white/20 text-white border-white/30',
-  'eclipse': 'bg-gray-300/20 text-gray-200 border-gray-300/30',
-  'planetary-alignment': 'bg-gray-400/20 text-gray-300 border-gray-400/30',
-  'space-mission': 'bg-white/25 text-white border-white/40',
-  'planet-observation': 'bg-gray-200/20 text-gray-100 border-gray-200/30',
-  'comet': 'bg-gray-500/20 text-gray-400 border-gray-500/30',
-  'iss-flyover': 'bg-white/15 text-gray-100 border-white/25',
-  'planetary-conjunction': 'bg-gray-300/25 text-gray-200 border-gray-300/35',
-  'other': 'bg-gray-400/15 text-gray-300 border-gray-400/25'
+  'meteor-shower': 'card-colorful card-purple',
+  'eclipse': 'card-colorful card-red',
+  'planetary-alignment': 'card-colorful card-purple',
+  'space-mission': 'card-colorful card-red',
+  'planet-observation': 'card-colorful card-orange',
+  'comet': 'card-colorful card-red',
+  'iss-flyover': 'card-colorful card-blue',
+  'planetary-conjunction': 'card-colorful card-blue',
+  'other': 'card-colorful card-yellow'
 };
 
 const eventTypeIcons = {
@@ -50,46 +50,48 @@ function formatDate(dateString: string): string {
 
 function EventCard({ event }: { event: AstronomicalEvent }) {
   return (
-    <div className="glass rounded-2xl p-6 card-hover glow-hover group relative overflow-visible">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div className="text-3xl p-2 rounded-xl glass">
+    <div className={eventTypeColors[event.type]}>
+      <div className="mb-6">
+        <div className="flex justify-end mb-3">
+          <span className="tag-modern opacity-75 text-sm">
+            {event.source}
+          </span>
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="icon-container text-4xl">
             {eventTypeIcons[event.type]}
           </div>
           <div>
-            <span className={`px-3 py-1 rounded-full text-xs font-medium border ${eventTypeColors[event.type]}`}>
+            <span className="tag-modern">
               {event.type.replace('-', ' ').toUpperCase()}
             </span>
           </div>
         </div>
-        <span className="text-sm text-white/50 glass px-3 py-1 rounded-full">
-          {event.source}
-        </span>
       </div>
       
-      <h3 className="font-bold text-xl text-white mb-3 group-hover:text-gray-200 transition-colors">
+      <h3 className="font-bold text-2xl mb-4 leading-tight">
         {event.name}
       </h3>
       
-      <p className="text-white/70 text-sm mb-4 line-clamp-3 leading-relaxed">
+      <p className="text-lg opacity-90 mb-6 leading-relaxed">
         {event.description}
       </p>
       
-      <div className="space-y-3 text-sm">
-        <div className="flex items-center text-white/80 glass-strong rounded-lg p-3">
-          <span className="text-lg mr-3">📅</span>
+      <div className="space-y-4 text-base">
+        <div className="flex items-center bg-white bg-opacity-20 rounded-2xl p-4 backdrop-blur-sm">
+          <span className="text-2xl mr-4">📅</span>
           <div>
-            <div className="font-medium">Date & Time</div>
-            <div className="text-white/60 text-xs">{formatDate(event.date)}</div>
+            <div className="font-semibold text-lg">Date & Time</div>
+            <div className="opacity-80 text-base">{formatDate(event.date)}</div>
           </div>
         </div>
         
         {event.visibility && (
-          <div className="flex items-center text-white/80 glass-strong rounded-lg p-3">
-            <span className="text-lg mr-3">👁️</span>
+          <div className="flex items-center bg-white bg-opacity-20 rounded-2xl p-4 backdrop-blur-sm">
+            <span className="text-2xl mr-4">👁️</span>
             <div>
-              <div className="font-medium">Visibility</div>
-              <div className="text-white/60 text-xs">
+              <div className="font-semibold text-lg">Visibility</div>
+              <div className="opacity-80 text-base">
                 {event.visibility.visibleToNakedEye ? 'Visible to naked eye' : 'Equipment needed'}
               </div>
             </div>
@@ -97,24 +99,24 @@ function EventCard({ event }: { event: AstronomicalEvent }) {
         )}
         
         {event.duration && (
-          <div className="flex items-center text-white/80 glass-strong rounded-lg p-3">
-            <span className="text-lg mr-3">⏱️</span>
+          <div className="flex items-center bg-white bg-opacity-20 rounded-2xl p-4 backdrop-blur-sm">
+            <span className="text-2xl mr-4">⏱️</span>
             <div>
-              <div className="font-medium">Duration</div>
-              <div className="text-white/60 text-xs">{event.duration}</div>
+              <div className="font-semibold text-lg">Duration</div>
+              <div className="opacity-80 text-base">{event.duration}</div>
             </div>
           </div>
         )}
       </div>
       
-      <div className="mt-6 flex gap-3 items-center relative z-10">
+      <div className="mt-8 flex gap-4 items-center">
         <CalendarExport event={event} />
         {event.externalUrl && (
           <a
             href={event.externalUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center text-white/70 hover:text-white text-sm font-medium transition-colors btn-glass px-4 py-2 rounded-lg"
+            className="btn-modern inline-flex items-center font-semibold text-base transition-all"
           >
             Learn more →
           </a>
@@ -159,14 +161,9 @@ export default function AstronomicalEvents({ onEventsChange }: AstronomicalEvent
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
-        <div className="glass-strong rounded-2xl p-8 text-center">
-          <div className="loading-dots mb-4">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-          <p className="text-white/70">Loading cosmic events...</p>
+        <div className="card-colorful card-blue text-center">
+          <div className="loading-modern mb-6"></div>
+          <p className="text-xl font-semibold">Loading cosmic events...</p>
         </div>
       </div>
     );
@@ -174,13 +171,13 @@ export default function AstronomicalEvents({ onEventsChange }: AstronomicalEvent
 
   if (error) {
     return (
-      <div className="glass-strong border border-red-400/30 rounded-2xl p-8 text-center glow-hover">
-        <div className="text-6xl mb-4">⚠️</div>
-        <h3 className="text-xl font-bold text-red-300 mb-3">Error Loading Events</h3>
-        <p className="text-white/70 mb-6">{error}</p>
+      <div className="card-colorful card-red text-center">
+        <div className="text-6xl mb-6">⚠️</div>
+        <h3 className="text-2xl font-bold mb-4">Error Loading Events</h3>
+        <p className="text-lg opacity-90 mb-8">{error}</p>
         <button
           onClick={() => window.location.reload()}
-          className="btn-primary-glass px-6 py-3 rounded-xl font-medium"
+          className="btn-modern font-semibold text-lg px-8 py-4"
         >
           Try Again
         </button>
@@ -189,26 +186,26 @@ export default function AstronomicalEvents({ onEventsChange }: AstronomicalEvent
   }
 
   return (
-    <div className="space-y-8 relative">
-      <div className="text-center glass-strong rounded-2xl p-8">
-        <h2 className="text-4xl font-bold mb-3">
-          <span className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-            Upcoming Astronomical Events
-          </span>
+    <div className="space-y-12 relative">
+      <div className="card-colorful card-purple text-center">
+        <h2 className="text-4xl font-bold mb-4">
+          Upcoming Astronomical Events
         </h2>
-        <p className="text-white/60">Discover the wonders of space happening near you</p>
+        <p className="text-xl opacity-90">Discover the wonders of space happening near you</p>
       </div>
-      
+
       {events.length === 0 ? (
-        <div className="text-center py-16 glass-strong rounded-2xl">
-          <span className="text-8xl mb-6 block">🌌</span>
-          <h3 className="text-2xl font-bold text-white mb-3">No events found</h3>
-          <p className="text-white/60">Check back later for upcoming astronomical events</p>
+        <div className="card-colorful card-yellow text-center">
+          <div className="text-6xl mb-6">🌌</div>
+          <h3 className="text-2xl font-bold mb-4">No Events Found</h3>
+          <p className="text-lg opacity-90">
+            No astronomical events found for your location. Try adjusting your location settings or check back later.
+          </p>
         </div>
       ) : (
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 relative">
-          {events.map((event) => (
-            <EventCard key={event.id} event={event} />
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {events.map((event, index) => (
+            <EventCard key={index} event={event} />
           ))}
         </div>
       )}
